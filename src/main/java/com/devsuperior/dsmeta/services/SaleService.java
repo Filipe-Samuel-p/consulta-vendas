@@ -23,15 +23,10 @@ public class SaleService {
 	private SaleRepository repository;
 
 	public Page<ReportDTO> getReport(String minDateStr, String maxDateStr, String name, Pageable pageable) {
-		LocalDate today = LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault());
+		LocalDate minDate = (minDateStr != null && !minDateStr.isEmpty()) ? LocalDate.parse(minDateStr) : null;
+		LocalDate maxDate = (maxDateStr != null && !maxDateStr.isEmpty()) ? LocalDate.parse(maxDateStr) : null;
 
-		LocalDate maxDate = maxDateStr != null && !maxDateStr.isEmpty()
-				? LocalDate.parse(maxDateStr) : today;
-
-		LocalDate minDate = minDateStr != null && !minDateStr.isEmpty()
-				? LocalDate.parse(minDateStr) : maxDate.minusYears(1L);
-
-		String nameParam = name != null ? name : "";
+		String nameParam = (name != null) ? name : "";
 
 		Page<ReportProjection> page = repository.reportSQL(minDate, maxDate, nameParam, pageable);
 
@@ -39,13 +34,8 @@ public class SaleService {
 	}
 
 	public List<SummaryDTO> getSummary(String minDateStr, String maxDateStr) {
-		LocalDate today = LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault());
-
-		LocalDate maxDate = maxDateStr != null && !maxDateStr.isEmpty()
-				? LocalDate.parse(maxDateStr) : today;
-
-		LocalDate minDate = minDateStr != null && !minDateStr.isEmpty()
-				? LocalDate.parse(minDateStr) : maxDate.minusYears(1L);
+		LocalDate minDate = (minDateStr != null && !minDateStr.isEmpty()) ? LocalDate.parse(minDateStr) : null;
+		LocalDate maxDate = (maxDateStr != null && !maxDateStr.isEmpty()) ? LocalDate.parse(maxDateStr) : null;
 
 		List<SummaryProjection> list = repository.summarySQL(minDate, maxDate);
 
@@ -53,4 +43,5 @@ public class SaleService {
 				.map(x -> new SummaryDTO(x.getSellerName(), x.getTotal()))
 				.collect(Collectors.toList());
 	}
+
 }
