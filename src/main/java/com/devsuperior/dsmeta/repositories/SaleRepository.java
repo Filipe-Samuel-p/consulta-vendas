@@ -21,14 +21,14 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                     "INNER JOIN tb_seller seller ON sale.seller_id = seller.id " +
                     "WHERE (:minDate IS NULL OR sale.date >= :minDate) " +
                     "AND (:maxDate IS NULL OR sale.date <= :maxDate) " +
-                    "AND (:name IS NULL OR :name = '' OR LOWER(seller.name) LIKE LOWER(CONCAT('%', :name, '%')))",
+                    "AND (:name IS NULL OR LOWER(seller.name) LIKE LOWER(CONCAT('%', :name, '%')))",
             countQuery =
                     "SELECT COUNT(*) " +
                             "FROM tb_sales sale " +
                             "INNER JOIN tb_seller seller ON sale.seller_id = seller.id " +
                             "WHERE (:minDate IS NULL OR sale.date >= :minDate) " +
                             "AND (:maxDate IS NULL OR sale.date <= :maxDate) " +
-                            "AND (:name IS NULL OR :name = '' OR LOWER(seller.name) LIKE LOWER(CONCAT('%', :name, '%')))")
+                            "AND (:name IS NULL OR LOWER(seller.name) LIKE LOWER(CONCAT('%', :name, '%')))")
     Page<ReportProjection> reportSQL(
             @Param("minDate") LocalDate minDate,
             @Param("maxDate") LocalDate maxDate,

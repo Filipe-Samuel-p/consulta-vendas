@@ -25,15 +25,20 @@ public class SaleService {
 	private SaleRepository repository;
 
 	public Page<ReportDTO> getReport(String minDateStr, String maxDateStr, String name, Pageable pageable) {
-		LocalDate minDate = (minDateStr != null && !minDateStr.isEmpty()) ? LocalDate.parse(minDateStr) : null;
-		LocalDate maxDate = (maxDateStr != null && !maxDateStr.isEmpty()) ? LocalDate.parse(maxDateStr) : null;
+		LocalDate today = LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault());
+		LocalDate oneYearAgo = today.minusYears(1);
+
+
+		LocalDate minDate = (minDateStr != null && !minDateStr.isEmpty()) ? LocalDate.parse(minDateStr) : oneYearAgo;
+		LocalDate maxDate = (maxDateStr != null && !maxDateStr.isEmpty()) ? LocalDate.parse(maxDateStr) : today;
+
 
 		String nameParam = (name != null && !name.isBlank()) ? name : null;
-
 
 		Page<ReportProjection> page = repository.reportSQL(minDate, maxDate, nameParam, pageable);
 
 		return page.map(x -> new ReportDTO(x.getId(), x.getDate(), x.getAmount(), x.getSellerName()));
+
 	}
 
 	public List<SummaryDTO> getSummary(String minDateStr, String maxDateStr) {
