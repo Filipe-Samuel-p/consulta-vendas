@@ -1,17 +1,17 @@
 package com.devsuperior.dsmeta.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.devsuperior.dsmeta.dto.ReportDTO;
+import com.devsuperior.dsmeta.dto.SaleDTO;
 import com.devsuperior.dsmeta.dto.SummaryDTO;
+import com.devsuperior.dsmeta.entities.Sale;
 import com.devsuperior.dsmeta.services.SaleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -43,4 +43,12 @@ public class SaleController {
 		List<SummaryDTO> list = service.getSummary(minDate, maxDate);
 		return ResponseEntity.ok(list);
 	}
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<SaleDTO> findById(@PathVariable Long id) {
+		Optional<SaleDTO> dto = service.findSaleDtoById(id);
+		return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+
 }

@@ -4,9 +4,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.devsuperior.dsmeta.dto.ReportDTO;
+import com.devsuperior.dsmeta.dto.SaleDTO;
 import com.devsuperior.dsmeta.dto.SummaryDTO;
 import com.devsuperior.dsmeta.projections.ReportProjection;
 import com.devsuperior.dsmeta.projections.SummaryProjection;
@@ -26,7 +28,8 @@ public class SaleService {
 		LocalDate minDate = (minDateStr != null && !minDateStr.isEmpty()) ? LocalDate.parse(minDateStr) : null;
 		LocalDate maxDate = (maxDateStr != null && !maxDateStr.isEmpty()) ? LocalDate.parse(maxDateStr) : null;
 
-		String nameParam = (name != null) ? name : "";
+		String nameParam = (name != null && !name.isBlank()) ? name : null;
+
 
 		Page<ReportProjection> page = repository.reportSQL(minDate, maxDate, nameParam, pageable);
 
@@ -43,5 +46,11 @@ public class SaleService {
 				.map(x -> new SummaryDTO(x.getSellerName(), x.getTotal()))
 				.collect(Collectors.toList());
 	}
+
+
+	public Optional<SaleDTO> findSaleDtoById(Long id) {
+		return repository.findById(id).map(sale -> new SaleDTO(sale));
+	}
+
 
 }
